@@ -41,11 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Catalogue.cs" />
     <Compile Include="PromotionDiscount.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Promotion.cs" />
     <Compile Include="Promotion3For1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShoppingCart.cs" />
     <Compile Include="Smallware.cs" />
   </ItemGroup>
   <ItemGroup>
