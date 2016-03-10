@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DiscountPromotion.cs" />
+    <Compile Include="PromotionDiscount.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Promotion.cs" />
     <Compile Include="Promotion3For1.cs" />

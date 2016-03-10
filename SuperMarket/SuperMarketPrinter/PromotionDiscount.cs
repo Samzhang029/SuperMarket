@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SuperMarketPrinter
 {
-    class DiscountPromotion : Promotion
+    class PromotionDiscount : Promotion
     {
         private Smallware promotionGoods;
-        public DiscountPromotion(Smallware goods)
+        public PromotionDiscount(Smallware goods)
         {
             promotionGoods = goods;
         }

@@ -9,6 +9,7 @@ namespace SuperMarketPrinter
     class Promotion3For1 : Promotion
     {
         private Smallware promotionGoods;
+
         public Promotion3For1(Smallware goods)
         {
             promotionGoods = goods;
@@ -16,7 +17,11 @@ namespace SuperMarketPrinter
         
         public override void DoPromotioin()
         {
-            throw new NotImplementedException();
+            int count = promotionGoods.Count;
+            GiftCount = count / 3;
+
+            SavedMoney = GiftCount * promotionGoods.UnitPrice;
+            TotalAfterPromotion = promotionGoods.Total - SavedMoney;
         }
 
         public override string ToString()
