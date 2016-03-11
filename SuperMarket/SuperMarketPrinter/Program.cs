@@ -10,6 +10,7 @@ namespace SuperMarketPrinter
     {
         static void Main(string[] args)
         {
+            
         }
     }
 }

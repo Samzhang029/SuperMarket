@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace SuperMarketPrinter
 {
-    class ShoppingCart
+    public class ShoppingCart
     {
+        public List<Smallware> NormalProducts { get; set; }
+
+        public List<Promotion> PromotionProducts { get; set; }
     }
 }
