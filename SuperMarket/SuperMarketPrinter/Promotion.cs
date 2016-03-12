@@ -8,6 +8,8 @@ namespace SuperMarketPrinter
 {
     public abstract class Promotion
     {
+        public string Name { get; set; }
+
         public Smallware Goods{get; set;}
 
         public decimal DiscountPrice { get; set; }
@@ -20,6 +22,10 @@ namespace SuperMarketPrinter
 
         public abstract void DoPromotioin();
 
-        public abstract string ToString();
+        public abstract override string ToString();
     }
+
+    
 }
+
+

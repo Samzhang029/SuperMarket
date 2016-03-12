@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SuperMarketPrinter
 {
     
-    public class Smallware
+    public class Smallware : ICloneable
     {
         public string Name { get; set; }
 
@@ -27,6 +27,16 @@ namespace SuperMarketPrinter
 
         public string BarCode { get; set; }
 
+        public bool HasPromotion { get; set; }
+
+        #region ICloneable Members
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        #endregion
     }
 
     public enum Category { Food, Goods }

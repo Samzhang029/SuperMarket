@@ -12,6 +12,7 @@ namespace SuperMarketPrinter
 
         public Promotion3For2(Smallware goods)
         {
+            Name = SuperMarketConsts.PromotionName3For2;
             promotionGoods = goods;
         }
         
