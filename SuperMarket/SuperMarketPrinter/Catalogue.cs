@@ -20,7 +20,7 @@ namespace SuperMarketPrinter
             AllProducts.Remove(product.BarCode);
         }
 
-        public static Smallware SearchProductByBarCode(string _barCode)
+        public static Smallware GetProductByBarCode(string _barCode)
         {
             return Catalogue.AllProducts[_barCode];
         }

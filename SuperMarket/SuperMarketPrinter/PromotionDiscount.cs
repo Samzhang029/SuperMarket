@@ -9,9 +9,13 @@ namespace SuperMarketPrinter
     class PromotionDiscount : Promotion
     {
         private Smallware promotionGoods;
-        public PromotionDiscount(Smallware goods)
+        public PromotionDiscount(Smallware goods, decimal _discount)
         {
+            Goods = goods;
             promotionGoods = goods;
+            Discount = _discount;
+
+            DoPromotioin();
         }
         
         public decimal Discount { get; set; }

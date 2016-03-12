@@ -8,21 +8,24 @@ namespace SuperMarketPrinter
 {
     class Promotion3For2 : Promotion
     {
-        private Smallware promotionGoods;
+        public Smallware PromotionGoods {get; set;}
 
         public Promotion3For2(Smallware goods)
         {
             Name = SuperMarketConsts.PromotionName3For2;
-            promotionGoods = goods;
+            Goods = goods;
+            PromotionGoods = goods;
+
+            DoPromotioin();
         }
         
         public override void DoPromotioin()
         {
-            int count = promotionGoods.Count;
+            int count = PromotionGoods.Count;
             GiftCount = count / 3;
 
-            SavedMoney = GiftCount * promotionGoods.UnitPrice;
-            TotalAfterPromotion = promotionGoods.Total - SavedMoney;
+            SavedMoney = GiftCount * PromotionGoods.UnitPrice;
+            TotalAfterPromotion = PromotionGoods.Total - SavedMoney;
         }
 
         public override string ToString()
