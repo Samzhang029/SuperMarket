@@ -10,6 +10,9 @@ namespace SuperMarketPrinter
     {
         public List<Smallware> allProducts;
 
+        public decimal TotalOfShoppingCart {get; set;};
+        public decimal TotalOfDiscount {get; set;}
+
         public ShoppingCart()
         {
             allProducts = new List<Smallware>();

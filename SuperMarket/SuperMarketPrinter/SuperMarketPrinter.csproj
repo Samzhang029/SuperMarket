@@ -53,6 +53,7 @@
     <Compile Include="PromotionStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShoppingCart.cs" />
+    <Compile Include="ShoppingCartPrinter.cs" />
     <Compile Include="Smallware.cs" />
     <Compile Include="SuperMarketConsts.cs" />
     <Compile Include="SuperMarketHelper.cs" />
