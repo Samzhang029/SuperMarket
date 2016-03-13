@@ -10,42 +10,27 @@ namespace SuperMarketPrinter
 {
     class Program
     {
-        public static ShoppingCart Cart;
-        public static PromotionStrategy promotionStrategy; 
         static void Main(string[] args)
         {
-            Cart = new ShoppingCart();
-            promotionStrategy = new PromotionStrategy();
+            SuperMarketHelper.InitializeCatalogue();
 
-            InitializeCatalogue();
-            InitializePromotionStrategy();
-
-            string oneOrder = SuperMarketHelper.ReadProductsFromJson("input001.json");
-            
+            ShoppingCart Cart = new ShoppingCart();
+            PromotionStrategy promotionStrategy = new PromotionStrategy();            
+            SuperMarketHelper.InitializePromotionStrategy(promotionStrategy);
+            string oneOrder = SuperMarketHelper.ReadProductsFromJson("PromotionDiscount95AndBuy3For2Test.json");
             SuperMarketHelper.PutProductsIntoShoppingCart(Cart, oneOrder, promotionStrategy);
+            ShoppingCartPrinter shoppingPrinter = new ShoppingCartPrinter(Cart);
+            Console.WriteLine(shoppingPrinter.PrintShoppingCart());
 
+            ShoppingCart Cart2 = new ShoppingCart();
+            PromotionStrategy promotionStrategy2 = new PromotionStrategy();
+            promotionStrategy2.AddNewPromotion("ITEM000005", PromotionType.Discount95); //苹果95折
+            string oneOrder2 = SuperMarketHelper.ReadProductsFromJson("PromotionDiscount95Test.json");
+            SuperMarketHelper.PutProductsIntoShoppingCart(Cart2, oneOrder2, promotionStrategy2);
+            ShoppingCartPrinter shoppingPrinter2 = new ShoppingCartPrinter(Cart2);
+            Console.WriteLine(shoppingPrinter2.PrintShoppingCart());
 
+            Console.ReadLine();
         }
-
-        private static void InitializePromotionStrategy()
-        {
-            promotionStrategy.AddNewPromotion("ITEM000001", PromotionType.Buy3For2); //可口可乐买三送一
-            promotionStrategy.AddNewPromotion("ITEM000005", PromotionType.Discount95); //苹果95折
-
-        }
-
-        
-
-        private static void InitializeCatalogue()
-        {
-            Catalogue.AddNewProduct(new Smallware() { BarCode = "ITEM000001", Name = "可口可乐", Category = Category.Food, UnitName = "瓶", UnitPrice = 3.00m });
-            Catalogue.AddNewProduct(new Smallware() { BarCode = "ITEM000003", Name = "羽毛球", Category = Category.Goods, UnitName = "个", UnitPrice = 1.00m });
-            Catalogue.AddNewProduct(new Smallware() { BarCode = "ITEM000005", Name = "苹果", Category = Category.Food, UnitName = "斤", UnitPrice = 5.50m });
-            //...
-
-            
-        }
-
-
     }
 }

@@ -8,45 +8,75 @@ namespace SuperMarketPrinter
 {
     public class ShoppingCartPrinter
     {
-        public ShoppingCart shopCart;
+        public ShoppingCart shoppingCart;
+
         public ShoppingCartPrinter(ShoppingCart _cart)
         {
-            shopCart = _cart; 
+            shoppingCart = _cart; 
         }
 
-        public string PrintOneNormalItem(Smallware item)
+        public string PrintShoppingCart()
         {
-            string strItem = string.Empty;
-            strItem = String.Format("名称：{0}，数量：{1}，单价：{2}（元），小计：{3}元\r\n" , 
-                                    item.Name, 
-                                    item.Count,
-                                    item.UnitPrice,
-                                    item.Total);
+            StringBuilder sbShoppingList = new StringBuilder();
+            bool hasAdditionalInfo = false;
+            StringBuilder sbBuy3Fro2 = new StringBuilder();
 
-            return strItem;
-        }
+            sbShoppingList.Append(PrintSuperMaketTitle());
+            foreach (var item in shoppingCart.AllProducts)
+            {
+                if (!item.HasPromotion)
+                {
+                    sbShoppingList.Append(item.ToString());
+                }
+                else
+                {
+                    Promotion currentPromotion = shoppingCart.AllPromotion[item.BarCode];
+                    if (currentPromotion.Name.Equals(PromotionType.Buy3For2))
+                    {
+                        if (!hasAdditionalInfo)
+                        { 
+                            hasAdditionalInfo = true; 
+                        }
+                        sbBuy3Fro2.Append(((Promotion3For2)currentPromotion).PrintPromotion3For2());
+                    }
+                    sbShoppingList.Append(currentPromotion.ToString());
+                }
+            }
 
-        public string PrintOnePromotionDiscountItem(Smallware item, ShoppingCart cart)
-        {
-            return string.Empty;   
-        }
+            //Print a cutting line.
+            sbShoppingList.Append(PrintCuttingLine());
 
-        public string PrintOnePromotionBuy3For2Item(Smallware item, ShoppingCart cart)
-        {
-            return string.Empty;
-        }
+            if (hasAdditionalInfo)
+            {
+                sbShoppingList.Append(PrintBuy3For2Title());
+                sbShoppingList.Append(sbBuy3Fro2.ToString());
+                sbShoppingList.Append(PrintCuttingLine());
+            }
 
-        public string PrintSuperMaketTitle()
-        {
-            return String.Format("***<{0}>购物清单***"， SuperMarketConsts.SuperMarketName);
+            //print ShoppingCart info
+            sbShoppingList.Append(shoppingCart.ToString());
+
+            //Print a ending line
+            sbShoppingList.Append(PrintEndingLine());
+
+            return sbShoppingList.ToString();
         }
-        public string PrintCuttingLine()
+        
+        private string PrintSuperMaketTitle()
         {
-            return "-----------------------";
+            return String.Format("***<{0}>购物清单***\r\n", SuperMarketConsts.SuperMarketName);
         }
-        public string PrintEndingLine()
+        private string PrintCuttingLine()
         {
-            return "***********************";
+            return "--------------------------\r\n";
+        }
+        private string PrintEndingLine()
+        {
+            return "**************************\r\n";
+        }
+        private string PrintBuy3For2Title()
+        {
+            return "买二赠一商品：\r\n";
         }
 
     }

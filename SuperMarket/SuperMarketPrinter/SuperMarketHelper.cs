@@ -10,7 +10,12 @@ namespace SuperMarketPrinter
 {
     public static class SuperMarketHelper
     {
-
+        /// <summary>
+        /// Put all goods into the ShoppingCart
+        /// </summary>
+        /// <param name="cart">ShoppingCart for this order</param>
+        /// <param name="oneOrder">A Order</param>
+        /// <param name="strategy">Pomotion Information</param>
         public static void PutProductsIntoShoppingCart(ShoppingCart cart, string oneOrder, PromotionStrategy strategy)
         {
             JsonReader reader = new JsonTextReader(new StringReader(oneOrder));
@@ -46,23 +51,33 @@ namespace SuperMarketPrinter
                     {
                         Smallware oneProduct  = (Catalogue.GetProductByBarCode(barCode) as Smallware).Clone() as Smallware;
                         oneProduct.Count = countProducts;
-                        Promotion oneProductPromotion = null;
-                        List<PromotionType> allPromotions = strategy.GetPromotions(barCode);
-                        if (null != allPromotions)
+                        if( null!= strategy)
                         {
-                            oneProduct.HasPromotion = true;
-                            oneProductPromotion = DealWithPromotions(oneProduct, allPromotions[0]);
+                            Promotion oneProductPromotion = null;
+                            List<PromotionType> allPromotions = strategy.GetPromotions(barCode);
+                            if (null != allPromotions)
+                            {
+                                oneProduct.HasPromotion = true;
+                                oneProductPromotion = DealWithPromotions(oneProduct, allPromotions[0]);
+                            }
+                        
+                            if (null != oneProductPromotion)
+                            {
+                                cart.AllPromotion.Add(barCode, oneProductPromotion);
+                            }
                         }
                         cart.AllProducts.Add(oneProduct);
-                        if (null != oneProductPromotion)
-                        {
-                            cart.AllPromotion.Add(barCode, oneProductPromotion);
-                        }
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Create new promotion to one product.
+        /// </summary>
+        /// <param name="oneProduct"></param>
+        /// <param name="promotion"></param>
+        /// <returns></returns>
         public static Promotion DealWithPromotions(Smallware oneProduct, PromotionType promotion)
         {
             Promotion currentPromotion;
@@ -70,22 +85,40 @@ namespace SuperMarketPrinter
             { 
                 case PromotionType.Buy3For2:
                 currentPromotion = new Promotion3For2(oneProduct);
+                currentPromotion.Name = PromotionType.Buy3For2;
                 return (Promotion3For2)currentPromotion;
                 break;
 
             case PromotionType.Discount95:
                 currentPromotion = new PromotionDiscount(oneProduct, 0.95m);
+                currentPromotion.Name = PromotionType.Discount95;
                 return (PromotionDiscount)currentPromotion;
                 break;
 
             }
-
             return null;
         }
 
-        internal static string ReadProductsFromJson(string fileName)
+        public static string ReadProductsFromJson(string fileName)
         {
-            return new StreamReader(@"..\..\Data\" + fileName).ReadToEnd();
+            return new StreamReader(@"..\..\..\TestData\" + fileName).ReadToEnd();
         }
+
+        public static void InitializeCatalogue()
+        {
+            Catalogue.AddNewProduct(new Smallware() { BarCode = "ITEM000001", Name = "可口可乐", Category = Category.Food, UnitName = "瓶", UnitPrice = 3.00m });
+            Catalogue.AddNewProduct(new Smallware() { BarCode = "ITEM000003", Name = "羽毛球", Category = Category.Goods, UnitName = "个", UnitPrice = 1.00m });
+            Catalogue.AddNewProduct(new Smallware() { BarCode = "ITEM000005", Name = "苹果", Category = Category.Food, UnitName = "斤", UnitPrice = 5.50m });
+            //...
+        }
+
+
+        public static void InitializePromotionStrategy(PromotionStrategy promotionStrategy)
+        {
+            promotionStrategy.AddNewPromotion("ITEM000001", PromotionType.Buy3For2); //可口可乐买二送一
+            promotionStrategy.AddNewPromotion("ITEM000003", PromotionType.Buy3For2); //羽毛球买二送一
+            promotionStrategy.AddNewPromotion("ITEM000005", PromotionType.Discount95); //苹果95折
+        }
+
     }
 }

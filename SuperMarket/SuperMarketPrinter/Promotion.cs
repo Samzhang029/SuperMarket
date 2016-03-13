@@ -8,7 +8,7 @@ namespace SuperMarketPrinter
 {
     public abstract class Promotion
     {
-        public string Name { get; set; }
+        public PromotionType Name { get; set; }
 
         public Smallware Goods{get; set;}
 
