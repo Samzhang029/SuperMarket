@@ -21,43 +21,50 @@ namespace SuperMarketPrinter
             bool hasAdditionalInfo = false;
             StringBuilder sbBuy3Fro2 = new StringBuilder();
 
-            sbShoppingList.Append(PrintSuperMaketTitle());
-            foreach (var item in shoppingCart.AllProducts)
+            try
             {
-                if (!item.HasPromotion)
+                sbShoppingList.Append(PrintSuperMaketTitle());
+                foreach (var item in shoppingCart.AllProducts)
                 {
-                    sbShoppingList.Append(item.ToString());
-                }
-                else
-                {
-                    Promotion currentPromotion = shoppingCart.AllPromotion[item.BarCode];
-                    if (currentPromotion.Name.Equals(PromotionType.Buy3For2))
+                    if (!item.HasPromotion)
                     {
-                        if (!hasAdditionalInfo)
-                        { 
-                            hasAdditionalInfo = true; 
-                        }
-                        sbBuy3Fro2.Append(((Promotion3For2)currentPromotion).PrintPromotion3For2());
+                        sbShoppingList.Append(item.ToString());
                     }
-                    sbShoppingList.Append(currentPromotion.ToString());
+                    else
+                    {
+                        Promotion currentPromotion = shoppingCart.AllPromotion[item.BarCode];
+                        if (currentPromotion.Name.Equals(PromotionType.Buy3For2))
+                        {
+                            if (!hasAdditionalInfo)
+                            {
+                                hasAdditionalInfo = true;
+                            }
+                            sbBuy3Fro2.Append(((Promotion3For2)currentPromotion).PrintPromotion3For2());
+                        }
+                        sbShoppingList.Append(currentPromotion.ToString());
+                    }
                 }
-            }
 
-            //Print a cutting line.
-            sbShoppingList.Append(PrintCuttingLine());
-
-            if (hasAdditionalInfo)
-            {
-                sbShoppingList.Append(PrintBuy3For2Title());
-                sbShoppingList.Append(sbBuy3Fro2.ToString());
+                //Print a cutting line.
                 sbShoppingList.Append(PrintCuttingLine());
+
+                if (hasAdditionalInfo)
+                {
+                    sbShoppingList.Append(PrintBuy3For2Title());
+                    sbShoppingList.Append(sbBuy3Fro2.ToString());
+                    sbShoppingList.Append(PrintCuttingLine());
+                }
+
+                //print ShoppingCart info
+                sbShoppingList.Append(shoppingCart.ToString());
+
+                //Print a ending line
+                sbShoppingList.Append(PrintEndingLine());
             }
-
-            //print ShoppingCart info
-            sbShoppingList.Append(shoppingCart.ToString());
-
-            //Print a ending line
-            sbShoppingList.Append(PrintEndingLine());
+            catch (Exception ex)
+            {
+                Console.WriteLine("Print error: {0}", ex.Message);
+            }
 
             return sbShoppingList.ToString();
         }

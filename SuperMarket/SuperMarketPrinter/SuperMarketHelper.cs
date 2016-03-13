@@ -18,57 +18,64 @@ namespace SuperMarketPrinter
         /// <param name="strategy">Pomotion Information</param>
         public static void PutProductsIntoShoppingCart(ShoppingCart cart, string oneOrder, PromotionStrategy strategy)
         {
-            JsonReader reader = new JsonTextReader(new StringReader(oneOrder));
-            while (reader.Read())
+            try
             {
-                string oneItem = reader.Value as string;
-                string barCode;
-                int countProducts =1;
-                if (null!=oneItem  && oneItem.IndexOf("ITEM") >= 0)
+                JsonReader reader = new JsonTextReader(new StringReader(oneOrder));
+                while (reader.Read())
                 {
-                    barCode = oneItem;
-                    if (oneItem.IndexOf("-") > 0)
+                    string oneItem = reader.Value as string;
+                    string barCode;
+                    int countProducts = 1;
+                    if (null != oneItem && oneItem.IndexOf("ITEM") >= 0)
                     {
-                        barCode = oneItem.Substring(0, oneItem.IndexOf("-")); 
-                        Int32.TryParse(oneItem.Substring(oneItem.IndexOf("-")+1) , out countProducts);
-                    }
-
-                    //Get the product object from Catalogue
-                    Smallware existProduct = cart.GetExistProduct(barCode);
-                    if (null != existProduct)
-                    { 
-                        //Existed item in Cart, please Update the count
-                        existProduct.Count += countProducts;
-
-                        //Then update the promotion
-                        Promotion existProductPromotion; 
-                        if(cart.AllPromotion.TryGetValue(barCode, out existProductPromotion))
+                        barCode = oneItem;
+                        if (oneItem.IndexOf("-") > 0)
                         {
-                            existProductPromotion.DoPromotioin();
+                            barCode = oneItem.Substring(0, oneItem.IndexOf("-"));
+                            Int32.TryParse(oneItem.Substring(oneItem.IndexOf("-") + 1), out countProducts);
                         }
-                    }
-                    else
-                    {
-                        Smallware oneProduct  = (Catalogue.GetProductByBarCode(barCode) as Smallware).Clone() as Smallware;
-                        oneProduct.Count = countProducts;
-                        if( null!= strategy)
+
+                        //Get the product object from Catalogue
+                        Smallware existProduct = cart.GetExistProduct(barCode);
+                        if (null != existProduct)
                         {
-                            Promotion oneProductPromotion = null;
-                            List<PromotionType> allPromotions = strategy.GetPromotions(barCode);
-                            if (null != allPromotions)
+                            //Existed item in Cart, please Update the count
+                            existProduct.Count += countProducts;
+
+                            //Then update the promotion
+                            Promotion existProductPromotion;
+                            if (cart.AllPromotion.TryGetValue(barCode, out existProductPromotion))
                             {
-                                oneProduct.HasPromotion = true;
-                                oneProductPromotion = DealWithPromotions(oneProduct, allPromotions[0]);
-                            }
-                        
-                            if (null != oneProductPromotion)
-                            {
-                                cart.AllPromotion.Add(barCode, oneProductPromotion);
+                                existProductPromotion.DoPromotioin();
                             }
                         }
-                        cart.AllProducts.Add(oneProduct);
+                        else
+                        {
+                            Smallware oneProduct = (Catalogue.GetProductByBarCode(barCode) as Smallware).Clone() as Smallware;
+                            oneProduct.Count = countProducts;
+                            if (null != strategy)
+                            {
+                                Promotion oneProductPromotion = null;
+                                List<PromotionType> allPromotions = strategy.GetPromotions(barCode);
+                                if (null != allPromotions)
+                                {
+                                    oneProduct.HasPromotion = true;
+                                    oneProductPromotion = DealWithPromotions(oneProduct, allPromotions[0]);
+                                }
+
+                                if (null != oneProductPromotion)
+                                {
+                                    cart.AllPromotion.Add(barCode, oneProductPromotion);
+                                }
+                            }
+                            cart.AllProducts.Add(oneProduct);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Cannot put goods into shopping cart: {0}", ex.Message);
             }
         }
 
@@ -84,16 +91,16 @@ namespace SuperMarketPrinter
             switch (promotion)
             { 
                 case PromotionType.Buy3For2:
-                currentPromotion = new Promotion3For2(oneProduct);
-                currentPromotion.Name = PromotionType.Buy3For2;
-                return (Promotion3For2)currentPromotion;
-                break;
+                    currentPromotion = new Promotion3For2(oneProduct);
+                    currentPromotion.Name = PromotionType.Buy3For2;
+                    return (Promotion3For2)currentPromotion;
+                    break;
 
-            case PromotionType.Discount95:
-                currentPromotion = new PromotionDiscount(oneProduct, 0.95m);
-                currentPromotion.Name = PromotionType.Discount95;
-                return (PromotionDiscount)currentPromotion;
-                break;
+                case PromotionType.Discount95:
+                    currentPromotion = new PromotionDiscount(oneProduct, 0.95m);
+                    currentPromotion.Name = PromotionType.Discount95;
+                    return (PromotionDiscount)currentPromotion;
+                    break;
 
             }
             return null;
